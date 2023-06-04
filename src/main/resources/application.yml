@@ -34,5 +34,6 @@ spring:
 logging:
   level:
     org.hibernate.sql: debug
+
 server:
   port: 20000

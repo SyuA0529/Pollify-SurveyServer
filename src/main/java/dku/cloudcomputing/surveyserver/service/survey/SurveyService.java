@@ -7,15 +7,15 @@ import dku.cloudcomputing.surveyserver.entity.survey.MultipleChoiceOption;
 import dku.cloudcomputing.surveyserver.entity.survey.MultipleChoiceSurveyDetail;
 import dku.cloudcomputing.surveyserver.entity.survey.Survey;
 import dku.cloudcomputing.surveyserver.entity.survey.SurveyDetail;
+import dku.cloudcomputing.surveyserver.exception.member.NoSuchMemberException;
+import dku.cloudcomputing.surveyserver.exception.member.NotMatchMemberException;
+import dku.cloudcomputing.surveyserver.exception.survey.NoSuchSurveyException;
+import dku.cloudcomputing.surveyserver.repository.member.MemberRepository;
 import dku.cloudcomputing.surveyserver.repository.survey.MultipleChoiceOptionRepository;
 import dku.cloudcomputing.surveyserver.repository.survey.SurveyDetailRepository;
-import dku.cloudcomputing.surveyserver.service.survey.dto.controller.CreateSurveyRequestDto;
-import dku.cloudcomputing.surveyserver.exception.member.NoSuchMemberException;
-import dku.cloudcomputing.surveyserver.exception.survey.NoSuchSurveyException;
-import dku.cloudcomputing.surveyserver.exception.member.NotMatchMemberException;
-import dku.cloudcomputing.surveyserver.repository.member.MemberRepository;
 import dku.cloudcomputing.surveyserver.repository.survey.SurveyRepository;
 import dku.cloudcomputing.surveyserver.security.JwtAuthenticator;
+import dku.cloudcomputing.surveyserver.service.survey.dto.controller.CreateSurveyRequestDto;
 import dku.cloudcomputing.surveyserver.service.survey.dto.kafka.KafkaSurveyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ public class SurveyService {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public Long saveSurvey(String token, CreateSurveyRequestDto createSurveyRequestDto) {
         Member requestMember = memberRepository.findByEmail(jwtAuthenticator.getEmail(token))
                 .orElseThrow(NoSuchMemberException::new);
@@ -57,13 +57,12 @@ public class SurveyService {
         try {
             sendCreatedSurveyToKafka(survey);
         } catch (Exception e) {
-            surveyRepository.delete(survey);
             throw new RuntimeException(e);
         }
         return survey.getId();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public void deleteSurvey(String token, Long surveyId) {
         validateReqMemberEqToCreateMember(token, surveyId);
         if(!surveyRepository.existsById(surveyId)) throw new NoSuchSurveyException();
@@ -99,7 +98,7 @@ public class SurveyService {
         kafkaTemplate.send(createSurveyTopic, kafkaSurveyJson);
     }
 
-    private void sendDeleteSurveyToKafka(Long surveyId) {
+    private void sendDeleteSurveyToKafka(long surveyId) {
         try {
             kafkaTemplate.send(deleteSurveyTopic, String.valueOf(surveyId));
         } catch (Exception e) {

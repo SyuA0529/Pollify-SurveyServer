@@ -1,5 +1,7 @@
 package dku.cloudcomputing.surveyserver.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dku.cloudcomputing.surveyserver.controller.dto.StatusResponseDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +29,7 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtAuthenticator jwtAuthenticator;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,6 +50,8 @@ public class SecurityConfig {
                                 public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
                                     response.setStatus(403);
                                     response.setCharacterEncoding("utf-8");
+                                    response.getWriter()
+                                            .write(objectMapper.writeValueAsString(new StatusResponseDto("fail")));
                                 }
                             });
                             v.authenticationEntryPoint(new AuthenticationEntryPoint() {
@@ -54,6 +59,8 @@ public class SecurityConfig {
                                 public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
                                     response.setStatus(401);
                                     response.setCharacterEncoding("utf-8");
+                                    response.getWriter()
+                                            .write(objectMapper.writeValueAsString(new StatusResponseDto("fail")));
                                 }
                             });
                         }
