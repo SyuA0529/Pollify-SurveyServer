@@ -79,9 +79,7 @@ class SurveyQueryRepositoryTest {
         for (SurveyDetail surveyDetail : survey.getSurveyDetails()) {
             surveyDetailRepository.save(surveyDetail);
             if(surveyDetail instanceof MultipleChoiceSurveyDetail) {
-                for (MultipleChoiceOption multipleChoiceOption : ((MultipleChoiceSurveyDetail) surveyDetail).getMultipleChoiceOptions()) {
-                    optionRepository.save(multipleChoiceOption);
-                }
+                optionRepository.saveAll(((MultipleChoiceSurveyDetail) surveyDetail).getMultipleChoiceOptions());
             }
         }
 

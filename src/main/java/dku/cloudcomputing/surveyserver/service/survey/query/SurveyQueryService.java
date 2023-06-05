@@ -7,10 +7,7 @@ import dku.cloudcomputing.surveyserver.exception.survey.NoSuchSurveyException;
 import dku.cloudcomputing.surveyserver.repository.member.MemberRepository;
 import dku.cloudcomputing.surveyserver.repository.survey.query.MultipleChoiceOptionQueryRepository;
 import dku.cloudcomputing.surveyserver.repository.survey.query.SurveyQueryRepository;
-import dku.cloudcomputing.surveyserver.repository.survey.query.dto.DetailSurveyQueryDto;
-import dku.cloudcomputing.surveyserver.repository.survey.query.dto.MultipleChoiceOptionQueryDto;
-import dku.cloudcomputing.surveyserver.repository.survey.query.dto.MultipleChoiceSurveyDetailQueryDto;
-import dku.cloudcomputing.surveyserver.repository.survey.query.dto.SimpleSurveyQueryDto;
+import dku.cloudcomputing.surveyserver.repository.survey.query.dto.*;
 import dku.cloudcomputing.surveyserver.security.JwtAuthenticator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -63,11 +60,10 @@ public class SurveyQueryService {
     }
 
     private static List<Long> getMultipleChoiceIds(DetailSurveyQueryDto surveyQueryDto) {
-        List<Long> mappedMultipleChoiceIds = surveyQueryDto.getSurveyDetails().stream()
-                .filter(o -> o instanceof MultipleChoiceSurveyDetailQueryDto)
-                .map(o -> o.getId())
+        return surveyQueryDto.getSurveyDetails().stream()
+                .filter(MultipleChoiceSurveyDetailQueryDto.class::isInstance)
+                .map(SurveyDetailQueryDto::getId)
                 .collect(Collectors.toList());
-        return mappedMultipleChoiceIds;
     }
 
     private static List<SimpleSurveyQueryDto> convertSurveyListToDto(Page<Survey> findResult) {

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "surveyType")
+@DiscriminatorColumn(name = "survey_type")
 @NoArgsConstructor
 public abstract class SurveyDetail {
     @Id @GeneratedValue

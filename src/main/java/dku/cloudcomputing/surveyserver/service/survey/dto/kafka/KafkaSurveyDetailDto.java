@@ -33,7 +33,8 @@ public class KafkaSurveyDetailDto {
         if(getSurveyDetailType().equals(SurveyDetailType.MULTIPLE_CHOICE)) {
             convertMultipleChoiceOptionToDto(
                     ((MultipleChoiceSurveyDetail) surveyDetail).getMultipleChoiceOptions(),
-                    getOptions());
+                    getOptions()
+            );
         }
     }
 
