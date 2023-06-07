@@ -74,13 +74,10 @@ public class SurveyService {
     }
 
     private void validateReqMemberEqToCreateMember(String token, Long surveyId) {
-        Member requestMember = memberRepository.findByEmail(jwtAuthenticator.getEmail(token))
-                .orElseThrow(NoSuchMemberException::new);
-
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(NoSuchSurveyException::new);
 
-        if(!survey.getMember().equals(requestMember))
+        if(!survey.getMember().getEmail().equals(jwtAuthenticator.getEmail(token)))
             throw new NotMatchMemberException();
     }
 
