@@ -1,0 +1,35 @@
+jwt:
+  secret:
+    key: BExbuXAWNp6By1nefaPHt0VFoqImQ6nZ92a8kbHE
+
+message:
+  topic:
+    saveMember: saveMember
+    saveSurvey: saveSurvey
+    deleteSurvey: deleteSurvey
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql:tcp://${DB_HOST}:${DB_PORT}/~/surveyserver
+    driver-class-name: org.postgresql.Driver
+    username: pollify
+    password: pollify
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
+    consumer:
+      group-id: surveyserver
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+logging:
+  level:
+    org.hibernate.sql: warn
+
+server:
+  port: 8080
