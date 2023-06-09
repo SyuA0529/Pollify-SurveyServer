@@ -21,13 +21,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = jwtProvider.resolveToken((HttpServletRequest) request);
-
-        if(token == null || !jwtProvider.validateToken(token)) return;
-        token = token.split(" ")[1].trim();
+        
         try {
+            if(token == null || !jwtProvider.validateToken(token)) throw new RuntimeException();
+            token = token.split(" ")[1].trim();
             Authentication auth = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
-        } catch (NoSuchMemberException e) {
+        } catch (RuntimeException e) {
 
         }
 
