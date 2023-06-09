@@ -45,23 +45,17 @@ public class SecurityConfig {
                 })
                 .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticator), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(v -> {
-                            v.accessDeniedHandler(new AccessDeniedHandler() {
-                                @Override
-                                public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-                                    response.setStatus(403);
-                                    response.setCharacterEncoding("utf-8");
-                                    response.getWriter()
-                                            .write(objectMapper.writeValueAsString(new StatusResponseDto("fail")));
-                                }
+                            v.accessDeniedHandler((request, response, accessDeniedException) -> {
+                                response.setStatus(403);
+                                response.setCharacterEncoding("utf-8");
+                                response.getWriter()
+                                        .write(objectMapper.writeValueAsString(new StatusResponseDto("fail")));
                             });
-                            v.authenticationEntryPoint(new AuthenticationEntryPoint() {
-                                @Override
-                                public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-                                    response.setStatus(401);
-                                    response.setCharacterEncoding("utf-8");
-                                    response.getWriter()
-                                            .write(objectMapper.writeValueAsString(new StatusResponseDto("fail")));
-                                }
+                            v.authenticationEntryPoint((request, response, authException) -> {
+                                response.setStatus(401);
+                                response.setCharacterEncoding("utf-8");
+                                response.getWriter()
+                                        .write(objectMapper.writeValueAsString(new StatusResponseDto("fail")));
                             });
                         }
                 );
