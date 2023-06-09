@@ -11,7 +11,7 @@ message:
 
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/~/surveyserver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/surveyserver
     driver-class-name: org.postgresql.Driver
     username: ${DB_USER}
     password: ${DB_PASSWORD}
