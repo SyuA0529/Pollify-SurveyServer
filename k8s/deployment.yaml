@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: surveyserver-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: surveyserver
+  template:
+    metadata:
+      labels:
+        app: surveyserver
+    spec:
+      containers:
+        - name: surveyserver
+          image: syua0529/surveyserver
+          env:
+            - name: DB_HOST
+              value: "survey-database-service.survey-service.svc.cluster.local"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "pollify"
+            - name: DB_PASSWD
+              value: "pollify"
+            - name: KAFKA_HOST
+              value: "kafka.kafka.svc.cluster.local"
+            - name: KAFKA_PORT
+              value: "9092"
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 500m

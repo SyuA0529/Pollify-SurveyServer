@@ -13,8 +13,8 @@ spring:
   datasource:
     url: jdbc:postgresql:tcp://${DB_HOST}:${DB_PORT}/~/surveyserver
     driver-class-name: org.postgresql.Driver
-    username: pollify
-    password: pollify
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
