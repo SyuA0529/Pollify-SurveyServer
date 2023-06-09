@@ -33,7 +33,7 @@ podTemplate(label: 'builder',
                     usernameVariable: 'USERNAME',
                     passwordVariable: 'PASSWORD'
                 )]) {
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${VERSION} ."
+                    sh "docker build -t ${DOCKER_HOST}/${DOCKER_IMAGE_NAME}:${VERSION} ."
                     sh "docker login -u ${USERNAME} -p ${PASSWORD}"
                     sh "docker push ${DOCKER_HOST}/${DOCKER_IMAGE_NAME}:${VERSION}"
                 }
