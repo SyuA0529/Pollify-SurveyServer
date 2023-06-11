@@ -14,9 +14,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -31,13 +28,6 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(v -> v.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors(corsConfigurer -> corsConfigurer.configurationSource(request -> {
-                    CorsConfiguration corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.setAllowedOrigins(List.of("http://172.25.235.136:30094"));
-                    corsConfiguration.setAllowedMethods(List.of("GET","POST", "DELETE"));
-                    corsConfiguration.setAllowedHeaders(List.of("*"));
-                    return corsConfiguration;
-                }))
                 .authorizeHttpRequests(v -> {
                     v.requestMatchers(HttpMethod.DELETE, "/surveys/*").authenticated();
                     v.requestMatchers(HttpMethod.GET, "/surveys/member").authenticated();
