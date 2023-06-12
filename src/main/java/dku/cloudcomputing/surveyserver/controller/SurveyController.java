@@ -4,16 +4,15 @@ import dku.cloudcomputing.surveyserver.controller.dto.StatusResponseDto;
 import dku.cloudcomputing.surveyserver.controller.dto.SurveyListQueryResponse;
 import dku.cloudcomputing.surveyserver.exception.dto.FieldBindException;
 import dku.cloudcomputing.surveyserver.repository.survey.query.dto.DetailSurveyQueryDto;
-import dku.cloudcomputing.surveyserver.repository.survey.query.dto.SimpleSurveyQueryDto;
 import dku.cloudcomputing.surveyserver.service.survey.SurveyService;
 import dku.cloudcomputing.surveyserver.service.survey.dto.controller.CreateSurveyRequestDto;
 import dku.cloudcomputing.surveyserver.service.survey.query.SurveyQueryService;
+import dku.cloudcomputing.surveyserver.service.survey.query.dto.SurveyListQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,17 +22,20 @@ public class SurveyController {
 
     @GetMapping("/surveys")
     public SurveyListQueryResponse queryPublicSurveys(@RequestParam(defaultValue = "0") int page) {
-        List<SimpleSurveyQueryDto> simpleSurveyQueryDtos = surveyQueryService.queryPublicSurveys(page);
-        return new SurveyListQueryResponse(simpleSurveyQueryDtos.size(), simpleSurveyQueryDtos);
+        SurveyListQueryDto surveyListQueryDto = surveyQueryService.queryPublicSurveys(page);
+        return new SurveyListQueryResponse(surveyListQueryDto.getTotalSize(),
+                surveyListQueryDto.getSurveyQueryDtos().size(),
+                surveyListQueryDto.getSurveyQueryDtos());
     }
 
     @GetMapping("/surveys/member")
     public SurveyListQueryResponse queryMemberSurveys(@RequestHeader(value = "Authorization") String token,
                                                       @RequestParam(defaultValue = "0") int page) {
-        List<SimpleSurveyQueryDto> simpleSurveyQueryDtos = surveyQueryService.queryMemberSurveys(getParseableToken(token), page);
-        return new SurveyListQueryResponse(simpleSurveyQueryDtos.size(), simpleSurveyQueryDtos);
+        SurveyListQueryDto surveyListQueryDto = surveyQueryService.queryMemberSurveys(getParseableToken(token), page);
+        return new SurveyListQueryResponse(surveyListQueryDto.getTotalSize(),
+                surveyListQueryDto.getSurveyQueryDtos().size(),
+                surveyListQueryDto.getSurveyQueryDtos());
     }
-
     @GetMapping("/surveys/{surveyId}")
     public DetailSurveyQueryDto querySurveyDetail(@PathVariable Long surveyId) {
         return surveyQueryService.queryDetailSurvey(surveyId);

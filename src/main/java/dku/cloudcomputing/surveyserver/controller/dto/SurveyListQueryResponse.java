@@ -7,10 +7,12 @@ import java.util.List;
 
 @Getter
 public class SurveyListQueryResponse {
-    private int count;
-    private List<SimpleSurveyQueryDto> surveys;
+    private final int totalPageNum;
+    private final int count;
+    private final List<SimpleSurveyQueryDto> surveys;
 
-    public SurveyListQueryResponse(int count, List<SimpleSurveyQueryDto> surveys) {
+    public SurveyListQueryResponse(int totalPageNum, int count, List<SimpleSurveyQueryDto> surveys) {
+        this.totalPageNum = totalPageNum;
         this.count = count;
         this.surveys = surveys;
     }
