@@ -58,7 +58,8 @@ class SurveyQueryServiceTest {
         saveSurvey(survey1);
         saveSurvey(survey2);
 
-        List<SimpleSurveyQueryDto> simpleSurveyQueryDtos = surveyQueryService.queryPublicSurveys(0);
+        List<SimpleSurveyQueryDto> simpleSurveyQueryDtos = surveyQueryService.queryPublicSurveys(0)
+                .getSurveyQueryDtos();
 
         assertThat(simpleSurveyQueryDtos.size()).isEqualTo(1);
         SimpleSurveyQueryDto simpleSurveyQueryDto = simpleSurveyQueryDtos.get(0);
@@ -78,7 +79,8 @@ class SurveyQueryServiceTest {
         saveSurvey(survey1);
         saveSurvey(survey2);
 
-        List<SimpleSurveyQueryDto> simpleSurveyQueryDtos = surveyQueryService.queryMemberSurveys("test2", 0);
+        List<SimpleSurveyQueryDto> simpleSurveyQueryDtos = surveyQueryService.queryMemberSurveys("test2", 0)
+                .getSurveyQueryDtos();
 
         assertThat(simpleSurveyQueryDtos.size()).isEqualTo(1);
         SimpleSurveyQueryDto simpleSurveyQueryDto = simpleSurveyQueryDtos.get(0);

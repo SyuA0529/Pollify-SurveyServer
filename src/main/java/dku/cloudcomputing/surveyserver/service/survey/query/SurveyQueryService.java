@@ -9,6 +9,7 @@ import dku.cloudcomputing.surveyserver.repository.survey.query.MultipleChoiceOpt
 import dku.cloudcomputing.surveyserver.repository.survey.query.SurveyQueryRepository;
 import dku.cloudcomputing.surveyserver.repository.survey.query.dto.*;
 import dku.cloudcomputing.surveyserver.security.JwtAuthenticator;
+import dku.cloudcomputing.surveyserver.service.survey.query.dto.SurveyListQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,18 +30,18 @@ public class SurveyQueryService {
     private final MultipleChoiceOptionQueryRepository optionQueryRepository;
     private final JwtAuthenticator jwtAuthenticator;
 
-    public List<SimpleSurveyQueryDto> queryPublicSurveys(int page) {
+    public SurveyListQueryDto queryPublicSurveys(int page) {
         Page<Survey> findResult =
                 surveyQueryRepository.findByVisibility(true, PageRequest.of(page, EachPageLength));
-        return convertSurveyListToDto(findResult);
+        return new SurveyListQueryDto(findResult.getTotalPages(), convertSurveyListToDto(findResult));
     }
 
-    public List<SimpleSurveyQueryDto> queryMemberSurveys(String token, int page) {
+    public SurveyListQueryDto queryMemberSurveys(String token, int page) {
         Member findMember = memberRepository.findByEmail(jwtAuthenticator.getEmail(token))
                 .orElseThrow(NoSuchMemberException::new);
         Page<Survey> findResult =
                 surveyQueryRepository.findByMemberId(findMember.getId(), PageRequest.of(page, EachPageLength));
-        return convertSurveyListToDto(findResult);
+        return new SurveyListQueryDto(findResult.getTotalPages(), convertSurveyListToDto(findResult));
     }
 
     public DetailSurveyQueryDto queryDetailSurvey(Long surveyId) {
