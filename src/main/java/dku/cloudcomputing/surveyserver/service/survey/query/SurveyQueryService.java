@@ -33,7 +33,8 @@ public class SurveyQueryService {
     public SurveyListQueryDto queryPublicSurveys(int page) {
         Page<Survey> findResult =
                 surveyQueryRepository.findByVisibility(true, PageRequest.of(page, EachPageLength));
-        return new SurveyListQueryDto(findResult.getTotalPages(), convertSurveyListToDto(findResult));
+        return new SurveyListQueryDto(findResult.getTotalPages(),
+                convertVisibleSurveyToDtoLists(findResult));
     }
 
     public SurveyListQueryDto queryMemberSurveys(String token, int page) {
@@ -41,7 +42,8 @@ public class SurveyQueryService {
                 .orElseThrow(NoSuchMemberException::new);
         Page<Survey> findResult =
                 surveyQueryRepository.findByMemberId(findMember.getId(), PageRequest.of(page, EachPageLength));
-        return new SurveyListQueryDto(findResult.getTotalPages(), convertSurveyListToDto(findResult));
+        return new SurveyListQueryDto(findResult.getTotalPages(),
+                convertVisibleSurveyToDtoLists(findResult));
     }
 
     public DetailSurveyQueryDto queryDetailSurvey(Long surveyId) {
@@ -67,7 +69,10 @@ public class SurveyQueryService {
                 .collect(Collectors.toList());
     }
 
-    private static List<SimpleSurveyQueryDto> convertSurveyListToDto(Page<Survey> findResult) {
-        return findResult.getContent().stream().map(SimpleSurveyQueryDto::new).collect(Collectors.toList());
+    private static List<SimpleSurveyQueryDto> convertVisibleSurveyToDtoLists(Page<Survey> findResult) {
+        return findResult.stream()
+                .filter(s -> s.getDuration() >= 0)
+                .map(SimpleSurveyQueryDto::new)
+                .collect(Collectors.toList());
     }
 }
