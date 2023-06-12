@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class SurveyQueryService {
-    private final int EachPageLength = 10;
+    private final int EachPageNum = 9;
     private final MemberRepository memberRepository;
     private final SurveyQueryRepository surveyQueryRepository;
     private final MultipleChoiceOptionQueryRepository optionQueryRepository;
@@ -32,7 +32,7 @@ public class SurveyQueryService {
 
     public SurveyListQueryDto queryPublicSurveys(int page) {
         Page<Survey> findResult =
-                surveyQueryRepository.findByVisibility(true, PageRequest.of(page, EachPageLength));
+                surveyQueryRepository.findByVisibility(true, PageRequest.of(page, EachPageNum));
         return new SurveyListQueryDto(findResult.getTotalPages(),
                 convertVisibleSurveyToDtoLists(findResult));
     }
@@ -41,7 +41,7 @@ public class SurveyQueryService {
         Member findMember = memberRepository.findByEmail(jwtAuthenticator.getEmail(token))
                 .orElseThrow(NoSuchMemberException::new);
         Page<Survey> findResult =
-                surveyQueryRepository.findByMemberId(findMember.getId(), PageRequest.of(page, EachPageLength));
+                surveyQueryRepository.findByMemberId(findMember.getId(), PageRequest.of(page, EachPageNum));
         return new SurveyListQueryDto(findResult.getTotalPages(),
                 convertVisibleSurveyToDtoLists(findResult));
     }
